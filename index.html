@@ -7,7 +7,7 @@ Testing a function forEach that mimics the features of the js built-in forEach
 function. Below are each of the conditions being tested specifically.
 
 Condition 1
-forEach function should provide an array and iterate array.length times
+forEach function should iterate array.length times of a provided array
 
 Condition 2
 forEach fucntion should provide the i(th) element from the array
@@ -43,7 +43,7 @@ function forEach(array, callback, optionalThisObj) {
 
 tests({
 
-  'forEach fn should iterate each element of the provided array': function() {
+  'orEach function should iterate array.length times of a provided array': function() {
 
     forEach(arr, function(number, i, callBackArr) {
       callBackTimesCalled++;
