@@ -27,7 +27,7 @@ forEach function should provide an optional this object in its callback function
 
 var arr = [1,2,3,4],
 	callBackTimesCalled = 0,
-	thisObj = {desc: 'Configurable this obj'};
+	thisObj = {desc: 'optional this obj'};
 
 
 function forEach(array, callback, optionalThisObj) {
@@ -80,7 +80,7 @@ tests({
       //did not throw error
 
 	  forEach(arr, function(number, i, callBackArr) {
-		  eq(this.desc, 'Configurable this obj');
+		  eq(this.desc, 'optional this obj');
 		}, thisObj);
   }
 
