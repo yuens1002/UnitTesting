@@ -1,0 +1,89 @@
+<script src="tinytest.js"></script>
+<script>
+
+/*
+
+Testing a function forEach that mimics the features of the js built-in forEach
+function. Below are each of the conditions being tested specifically.
+
+Condition 1
+forEach function should provide an array and iterate array.length times
+
+Condition 2
+forEach fucntion should provide the i(th) element from the array
+as the 1st argument to its callback function
+
+Condition 3
+forEach fn should provide the 0-index of the i(th) element from
+the array as the 2nd arg to the callback function
+
+Condition 4
+forEach function should provide the array in its callback function
+
+Condition 5
+forEach function should provide an optional this object in its callback function
+
+*/
+
+var arr = [1,2,3,4],
+	callBackTimesCalled = 0,
+	thisObj = {desc: 'Configurable this obj'};
+
+
+function forEach(array, callback, optionalThisObj) {
+	for (var i = 0; i < array.length; i++) {
+		if (optionalThisObj) {
+				callback.call(optionalThisObj, array[i],i, array);
+		} else {
+			callback(array[i],i, array);
+		}
+	}
+}
+
+
+tests({
+
+  'forEach fn should provide an array and iterate array.length times': function() {
+
+    forEach(arr, function(number, i, callBackArr) {
+      callBackTimesCalled++;
+    });
+    eq(callBackTimesCalled, arr.length);
+  },
+
+  'forEach fn should provide the i(th) element of the array as the 1st argument to its callback fn': function() {
+
+    forEach(arr, function(number, i, callBackArr) {
+        eq(number, arr[i]);
+      });
+  },
+
+  'forEach fn should provide the 0-index of the i(th) element from the array as the 2nd arg to the callback fn': function() {
+
+    forEach(arr, function(number, i, callBackArr) {
+		  eq(number, arr[i]);
+		});
+
+  },
+
+  'It should pass in the original array as the 3rd arg to the callback': function() {
+
+	  forEach(arr, function(number, i, callBackArr) {
+		  eq(arr, callBackArr);
+		});
+
+  },
+
+  'forEach function should provide an optional this object in its callback function': function() {
+
+	  //other condtions w/o optional obj prove it optional b/c those
+      //did not throw error
+
+	  forEach(arr, function(number, i, callBackArr) {
+		  eq(this.desc, 'Configurable this obj');
+		}, thisObj);
+  }
+
+});
+
+</script>
