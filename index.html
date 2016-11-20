@@ -43,7 +43,7 @@ function forEach(array, callback, optionalThisObj) {
 
 tests({
 
-  'forEach fn should provide an array and iterate array.length times': function() {
+  'forEach fn should iterate each element of the provided array': function() {
 
     forEach(arr, function(number, i, callBackArr) {
       callBackTimesCalled++;
