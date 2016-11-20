@@ -26,7 +26,7 @@ forEach function can provide an optional this object in its callback function
 */
 
 var arr = [1,2,3,4],
-	callBackTimesCalled = 0,
+	numberOfIterations = 0,
 	thisObj = {desc: 'optional this obj'};
 
 
@@ -46,42 +46,41 @@ tests({
   'forEach function should iterate array.length times of a provided array': function() {
 
     forEach(arr, function(number, i, callBackArr) {
-      callBackTimesCalled++;
+      numberOfIterations++;
     });
-    eq(callBackTimesCalled, arr.length);
+    eq(numberOfIterations, arr.length);
   },
 
   'forEach fn should provide the i(th) element of the array as the 1st argument to its callback fn': function() {
 
     forEach(arr, function(number, i, callBackArr) {
-        eq(number, arr[i]);
-      });
+	  eq(number, arr[i]);
+	});
   },
 
   'forEach fn should provide the 0-index of the i(th) element from the array as the 2nd arg to the callback fn': function() {
 
     forEach(arr, function(number, i, callBackArr) {
-		  eq(number, arr[i]);
-		});
+	  eq(number, arr[i]);
+	});
 
   },
 
   'forEach fn should provide the array in its callback fn': function() {
 
-	  forEach(arr, function(number, i, callBackArr) {
-		  eq(arr, callBackArr);
-		});
+	forEach(arr, function(number, i, callBackArr) {
+	  eq(arr, callBackArr);
+	});
 
   },
 
   'forEach fn can provide an optional thisObj in its callback fn': function() {
 
-	  //other conditions w/o thisOjb prove it optional b/c those
-      //did not throw error
+	//other conditions w/o thisObj prove it optional b/c those conditions did not throw an error
 
-	  forEach(arr, function(number, i, callBackArr) {
-		  eq(this.desc, 'optional this obj');
-		}, thisObj);
+	forEach(arr, function(number, i, callBackArr) {
+	  eq(this.desc, 'optional this obj');
+	}, thisObj);
   }
 
 });
