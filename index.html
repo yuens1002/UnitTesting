@@ -33,7 +33,7 @@ var arr = [1,2,3,4],
 function forEach(array, callback, optionalThisObj) {
 	for (var i = 0; i < array.length; i++) {
 		if (optionalThisObj) {
-				callback.call(optionalThisObj, array[i],i, array);
+			callback.call(optionalThisObj, array[i],i, array);
 		} else {
 			callback(array[i],i, array);
 		}
