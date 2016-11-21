@@ -1,7 +1,7 @@
-Unit Testing functions using the Tiniest Javascript library
-===========================================================
+Unit Testing functions
+======================
 
-In the [index.html](http://yuens.work/UnitTesting/) file, I've provided conditions to test features of a function called forEach that mimics the built-in javascript forEach function. You can click on the index.html link and use the browser inspector to see the test results in the console. If you would like to find out more information about the Tiniest Javascript unit testing library, please refer the section below.  
+I've written a few functions that closely mimic thier respective built-in Javascript functions. I then built unit tests to make sure the functions work as intended using the Tiniest Javascript unit testing library. The [index.html](http://yuens.work/UnitTesting/) provides the link to the unit test page of each of the functions I built. You can simply click on the function you're interested and use the browser inspector to see the test results in the console. If you would like to find out more information about the Tiniest Javascript unit testing library, please refer the section below.  
 
 
 Tiniest JavaScript unit testing library
