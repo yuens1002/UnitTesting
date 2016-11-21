@@ -98,14 +98,14 @@ tests({
 
   },
 
-  'Filter fn should return a new array from the array': function() {
+  'filter fn should return a new array from the array': function() {
 
     filter(arr, filterCallback);
 	eq(Array.isArray(filteredArr), true);
 	eq(filteredArr != arr, true);
   },
 
-  'Filter fn should return a new array with element(s) of the array satisfying the given test in its callback fn': function() {
+  'filter fn should return a new array with element(s) of the array satisfying the given test in its callback fn': function() {
 
 	filter(arr, filterCallback);
 	eq(Array.isArray(filteredArr), true);
