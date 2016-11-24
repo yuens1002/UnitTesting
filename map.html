@@ -14,20 +14,23 @@ Map fucntion should provide the i(th) element from the array
 as the 1st argument to its callback function
 
 Condition 3
-Filter function should provide the 0-index of element from
+Map function should provide the 0-index of element from
 the array as the 2nd arg to the callback function
 
 Condition 4
-Filter function should provide the array in its callback function
+Map function should provide the array in its callback function
 
 Condition 5
-Filter function can provide an optional this object in its callback function
+Map function can provide an optional this object in its callback function
 
 Condition 6
-Filter function should return a new array from the array
+Map function should return a new array from the array
 
 Condition 7
-Filter function should return a new array with element(s) of the array satisfying the given test in its callback fn
+Map function should skip over an unassigned index (hole) in the index
+
+Condition 8
+Map function should return a new array of element(s) transformed by its callback function
 
 */
 
@@ -134,7 +137,7 @@ tests({
 
     map(
 		arr,
-	    function(i_th_el, i) {
+	    function() {
 		  eq(this.desc, 'Optional this object being passed to the callback function');
 	    },
 		ThisObj
@@ -184,7 +187,7 @@ tests({
 
   },
 
-  'Map fn should return a new array of element(s) transformed by its callback fn': function() {
+  'Map fn should return a new array of element(s) transformed by its callback fn: ': function() {
 
 	var
 	arr = [1, 2, 3],
