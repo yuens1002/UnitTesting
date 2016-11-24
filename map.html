@@ -1,0 +1,208 @@
+<script src="tinytest.js"></script>
+<script>
+
+/*
+
+Testing a function map that mimics the features of the js built-in map
+function. Below are each of the conditions being tested specifically.
+
+Condition 1
+Map function should iterate array.length times of a provided array
+
+Condition 2
+Map fucntion should provide the i(th) element from the array
+as the 1st argument to its callback function
+
+Condition 3
+Filter function should provide the 0-index of element from
+the array as the 2nd arg to the callback function
+
+Condition 4
+Filter function should provide the array in its callback function
+
+Condition 5
+Filter function can provide an optional this object in its callback function
+
+Condition 6
+Filter function should return a new array from the array
+
+Condition 7
+Filter function should return a new array with element(s) of the array satisfying the given test in its callback fn
+
+*/
+
+function map(array, mapCallback, optionalThisObj) {
+
+	var mappedArray = [];
+
+	for (var i = 0; i < array.length; i++) {
+		if (i in array) { // skipping unassigned index (hole) in the array
+			if (optionalThisObj) {
+				mappedArray[i] = mapCallback.call(optionalThisObj, array[i],i, array);
+			} else {
+				mappedArray[i] = mapCallback(array[i],i, array);
+			}
+		}
+	}
+
+	return mappedArray;
+}
+
+tests({
+
+  'Map fn should iterate array.length times of a provided array: ': function() {
+
+	var
+	arr = [1,2,3],
+	numberOfIterations = 0;
+
+	// for example: map(array, callback);
+
+    map(
+		arr,
+	    function() {
+	      numberOfIterations++;
+	    }
+	);
+    eq(numberOfIterations, arr.length);
+  },
+
+  'Map fn should provide the i(th) element of the array as the 1st argument to its callback fn: ': function() {
+
+    var
+	arr = [1],
+	element;
+
+	// for example: map(array, callback(firstArg));
+
+    map(
+		arr,
+	    function(i_th_el) {
+		  element = i_th_el;
+	    }
+	);
+	eq(element, arr[0]);
+  },
+
+  'Map fn should provide the 0-index of the element from the array as the 2nd arg to the callback fn: ': function() {
+
+    var
+	arr = [5, 4],
+	element = [];
+
+	// for example: map(array, callback(firstArg, zro_idx));
+
+    map(
+		arr,
+	    function(i_th_el, i) {
+		  element[i] = i_th_el;
+	    }
+	);
+	eq(element[0], arr[0]);
+	eq(element[1], arr[1]);
+
+  },
+
+  'Map fn should provide the array to its callback fn: ': function() {
+
+	var
+	arr = [1, 2, 3],
+	originalArr;
+
+	// for example: map(array, callback(firstArg, zro_idx, arrFromCallback));
+
+    map(
+		arr,
+	    function(i_th_el, i, arrOriginal) {
+		  originalArr = arrOriginal;
+	    }
+	);
+	eq(Array.isArray(originalArr), true);
+	eq(toString(originalArr), toString(arr));
+
+  },
+
+  'Map fn can provide an optional thisObj to its callback fn: ': function() {
+
+	//other conditions w/o thisObj prove it optional b/c those conditions did not throw an error
+
+	var
+	arr = [1],
+	ThisObj = {desc: 'Optional this object being passed to the callback function'};
+
+	// for example: map(array, callback, ThisObject);
+
+    map(
+		arr,
+	    function(i_th_el, i) {
+		  eq(this.desc, 'Optional this object being passed to the callback function');
+	    },
+		ThisObj
+	);
+  },
+
+  'Map fn should return a new array from the array: ': function() {
+
+    var arr = [1,2,3,4,5];
+
+	// test to make sure the returned array is an array
+	eq(Array.isArray(
+	  map( // for example: map(array, callback);
+		arr,
+	    function(i_th_el) {
+		  return i_th_el;
+	    }
+	  )
+	), true);
+
+	// test to make sure the returned array is not the same array
+	eq(
+	  map( // for example: map(array, callback);
+		arr,
+	    function(i_th_el) {
+		  return i_th_el;
+	    }
+	  ) === arr, false);
+
+  },
+
+  'Map fn should skip unassigned index in the array: ': function() {
+
+    var
+	arr = [, 1, 2],
+	mappedArr = map(
+		arr,
+	    function(i_th_el) {
+		  return i_th_el;
+	    }
+	);
+	// all arrays are objects, therefore using (property in object)
+	// syntax allows us to check if the skipped over property (index) exists.
+	eq(mappedArr[0] in mappedArr, false);
+	eq(mappedArr[1], 1);
+	eq(mappedArr[2], 2);
+
+  },
+
+  'Map fn should return a new array of element(s) transformed by its callback fn': function() {
+
+	var
+	arr = [1, 2, 3],
+	mappedArr =
+
+	// for example: map(array, callback(firstArg));
+
+    map(
+		arr,
+	    function(i_th_el) {
+		  return i_th_el * 2;
+	    }
+	);
+	eq(mappedArr[0], 2);
+	eq(mappedArr[1], 4);
+	eq(mappedArr[2], 6);
+  }
+
+});
+
+</script>
