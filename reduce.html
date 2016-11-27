@@ -22,7 +22,7 @@ Requirements
 if startVal is provided, the result value is initialized with startVal
 if startVal is provided, array[i] (current value) is initialized with array[0]
 
-if startVal is NOT provided, result value is initialized with array[0]
+if startVal is NOT provided, the result value is initialized with the 1st element of the array that isn't empty
 if startVal is NOT provided, array[i] (current value) is initialized with array[1]
 
 if the array (passed in) is empty and startVal is NOT provided >>> typeError
@@ -37,32 +37,38 @@ the reduce function should pass the array to its callback function
 
 // function definition
 function reduce(array, callback, startVal) {
-  var result;
+  var
+  result,
+  // get the number of keys in the array
+  numOfKeys = Object.keys(array).length,
+  // find the 1st element in the array that isn't empty
+  firstEl = array[Object.keys(array)[0]];
 
   if (array.length === 0 && startVal != undefined) {
-	  result = startVal;
-  } else if (arry.length === 1 && startVal === undefined) {
-	  result = array[0];
+	  return startVal;
+  } else if (numOfKeys === 1 && startVal === undefined) {
+	  return firstEl;
   } else if (array.length === 0 && startVal === undefined) {
-      result = new TypeError('Need at least (1) element in an array or a starting value to return');
-	  // throw result;
-
-  } else if (array.length > 0 && startVal != undefined) {
+      throw new TypeError('Need at least (1) element in an array or a starting value to return');
+  } else if (numOfKeys > 0 && startVal != undefined) {
       result = startVal;
       for (var i = 0; i < array.length; i++) {
 		  if (i in array) {
               result = callback(result, array[i], i, array);
 		  }
       }
-  } else if (array.length > 0 && startVal === undefined) {
-	  result = array[0];
+	  return result;
+  } else if (numOfKeys > 1 && startVal === undefined) {
+	  result = firstEl;
 	  for (var i = 1; i < array.length; i++) {
 		  if (i in array) {
 			  result = callback(result, array[i], i, array);
 		  }
       }
+	  return result;
+  } else {
+	  return undefined;
   }
-  return result;
 }
 
 //conditions being tested for the requriements
@@ -163,16 +169,16 @@ tests({
 
   'if the array (passed in) is empty and startVal is NOT provided >>> typeError: ': function() {
 
-	var
-	arr = [],
-	result =
-	reduce(
-		arr,
-	    function() {
-	    }
-	);
-    console.log(result instanceof TypeError);
-    eq(result instanceof TypeError, true);
+	var errMsg;
+
+	try {
+		reduce([]);
+	}
+	catch(e) {
+	   errMsg = e;
+	}
+
+    eq(errMsg instanceof TypeError, true);
   },
 
   'if the array is empty and startVal is provided >>> return startVal w/o running callback: ': function() {
@@ -185,7 +191,7 @@ tests({
 	reduce(
 		arr,
 	    function(result, currentValue, i, array) {
-			return testArr = [1,2,3];
+			testArr = [1,2,3];
 	    }, startVal
 	);
     eq(result, 5);
@@ -201,7 +207,7 @@ tests({
 	reduce(
 		arr,
 	    function() {
-			return testArr = [1,2,3];
+			testArr = [1,2,3];
 	    }
 	);
     eq(result, arr[0]);
@@ -239,11 +245,11 @@ tests({
 	eq(noHoleArr[2],3);
   },
 
-  'Reduce function pass the array to its callback function: ': function() {
+  'Reduce function should pass the array to its callback function: ': function() {
 
 	var
 	arr = [1,2],
-	originalArr = [];
+	originalArr;
 
     reduce(
 		arr,
