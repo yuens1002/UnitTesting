@@ -30,7 +30,7 @@ Condition 7
 Filter function should return a new array with element(s) of the array satisfying the given test in its callback fn
 
 */
-
+/*
 var arr = [1,2,3,4],
 	thisObj = {desc: 'optional this obj'},
 	numberOfIterations = 0,
@@ -60,56 +60,100 @@ function filter(array, filterCallback, optionalThisObj) {
 	}
 	return filteredArr = newArr;
 }
+*/
+
+function filter(array, callback, optionalThis) {
+
+	var filteredArr = [];
+	for (var i = 0; i < array.length; i++) {
+		if (optionalThis) {
+			//test to see if the callback condition is true, if so, return the element
+			if (callback.call(optionalThis, array[i],i, array)) {
+				filteredArr.push(array[i]);
+			}
+		} else {
+			//test to see if the callback condition is true, if so, return the element
+			if (callback(array[i],i, array)) {
+				filteredArr.push(array[i]);
+			}
+		}
+	}
+	return filteredArr;
+}
 
 tests({
 
-  'filter fn should iterate array.length times of a provided array': function() {
+  'filter fn should iterate array.length times of a provided array: ': function() {
 
-    filter(arr, filterCallback);
-    eq(numberOfIterations, arr.length);
+	var numberOfIterations = 0;
+    filter([1,2,3], function () {
+		numberOfIterations++;
+	});
+    eq(numberOfIterations, 3);
   },
 
-  'filter fn should provide the i(th) element of the array as the 1st argument to its callback fn': function() {
+  'filter fn should provide the i(th) element of the array as the 1st argument to its callback fn: ': function() {
 
-    filter(arr, filterCallback);
-	eq(arrElement[0], arr[0]);
+	var element;
+    filter([1], function(el) {
+		element = el
+	});
+	eq(element, 1);
   },
 
-  'filter fn should provide the 0-index of the element from the array as the 2nd arg to the callback fn': function() {
+  'filter fn should provide the 0-index of the element from the array as the 2nd arg to the callback fn: ': function() {
 
-    filter(arr, filterCallback);
-	eq(arrElement[0], arr[0]);
-
-  },
-
-  'filter fn should provide the array in its callback fn': function() {
-
-	filter(arr, filterCallback);
-	eq(arrFromCallback, arr)
+	var index;
+    filter([1], function(el, i) {
+		index = i;
+	});
+	eq(index, 0);
 
   },
 
-  'filter fn can provide an optional thisObj in its callback fn': function() {
+  'filter fn should provide the array in its callback fn: ': function() {
+    var
+	arrInCallback,
+	arr = [1,2,3];
+	filter(arr, function(el, i, array) {
+		arrInCallback = array;
+	});
+	eq(arrInCallback, arr);
+
+  },
+
+  'filter fn can provide an optional thisObj in its callback fn: ': function() {
 
 	//other conditions w/o thisObj prove it optional b/c those conditions did not throw an error
 
-	filter(arr, filterCallback, thisObj);
-	eq(thisObjFromCallBack, thisObj);
+	var
+	thisObj = {desc: 'optional object being passed'}
+
+	filter([1], function() {
+		eq(this.desc, 'optional object being passed');
+	}, thisObj);
+
 
   },
 
   'filter fn should return a new array from the array': function() {
 
-    filter(arr, filterCallback);
-	eq(Array.isArray(filteredArr), true);
-	eq(filteredArr != arr, true);
+	var arr = [],
+		filteredArr = filter(arr, function() {});
+    eq(Array.isArray(filteredArr), true);
+    eq(filteredArr !== arr, true);
   },
 
   'filter fn should return a new array with element(s) of the array satisfying the given test in its callback fn': function() {
 
-	filter(arr, filterCallback);
-	eq(Array.isArray(filteredArr), true);
-	eq(toString(filteredArr), toString(arr));
+	var arr = [1, 2, 3, 4],
+		filteredArr = filter(arr, function(el) {
+		return el > 2
+		//expect [3, 4]
+	});
+	eq(filteredArr.length, 2);
+	eq(filteredArr[0], 3);
+	eq(filteredArr[1], 4);
   }
 
 });
