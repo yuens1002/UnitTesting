@@ -1,0 +1,260 @@
+<script src="tinytest.js"></script>
+<script>
+
+/*
+
+Unit Tests for a function reduce that mimics the features of the js built-in reduce
+function.
+
+Function Signiture
+reduce(array, callback function (result, array[i], i, array) {}[, startVal])
+
+Parameters
+array - the array being passed in to reduce
+callback - function (must have a return statement)
+	result - is set to (startVal) if available. Otherwise, set to array[0]
+	array[i] - current value
+	i - index of the current value
+	array - the array being passed in
+startVal (optional) - initial value (of result) in the callback function
+
+Requirements
+if startVal is provided, the result value is initialized with startVal
+if startVal is provided, array[i] (current value) is initialized with array[0]
+
+if startVal is NOT provided, result value is initialized with array[0]
+if startVal is NOT provided, array[i] (current value) is initialized with array[1]
+
+if the array (passed in) is empty and startVal is NOT provided >>> typeError
+if the array is empty and startVal is provided >>> return startVal w/o running callback
+if the array has one element and startVal is Not provided >>> return startVal w/o running callback
+
+the reduce function should return a single value
+the reduce function should skip over any holes in the array
+the reduce function should pass the array to its callback function
+
+*/
+
+// function definition
+function reduce(array, callback, startVal) {
+  var result;
+
+  if (array.length === 0 && startVal != undefined) {
+	  result = startVal;
+  } else if (arry.length === 1 && startVal === undefined) {
+	  result = array[0];
+  } else if (array.length === 0 && startVal === undefined) {
+      result = new TypeError('Need at least (1) element in an array or a starting value to return');
+	  // throw result;
+
+  } else if (array.length > 0 && startVal != undefined) {
+      result = startVal;
+      for (var i = 0; i < array.length; i++) {
+		  if (i in array) {
+              result = callback(result, array[i], i, array);
+		  }
+      }
+  } else if (array.length > 0 && startVal === undefined) {
+	  result = array[0];
+	  for (var i = 1; i < array.length; i++) {
+		  if (i in array) {
+			  result = callback(result, array[i], i, array);
+		  }
+      }
+  }
+  return result;
+}
+
+//conditions being tested for the requriements
+tests({
+
+  'if startVal is provided and array is NOT empty, the callback function should run array.length times: ': function() {
+
+	var
+	arr = [1,2,3],
+	valStart = 0,
+	numberOfTimesCallbackHasRun = 0;
+
+    reduce(
+		arr,
+	    function() {
+		  numberOfTimesCallbackHasRun++;
+	    },valStart
+	);
+    eq(numberOfTimesCallbackHasRun,3);
+  },
+
+  'if startVal is Not provided and array is NOT empty, the callback function should run array.length - 1 time(s): ': function() {
+
+	var
+	arr = [1,2,3],
+	numberOfTimesCallbackHasRun = 0;
+
+    reduce(
+		arr,
+	    function() {
+		  numberOfTimesCallbackHasRun++;
+	    }
+	);
+    eq(numberOfTimesCallbackHasRun,2);
+  },
+
+  'if startVal is provided, result is initialized with startVal: ': function() {
+
+	var
+	arr = [1,2,3],
+	valStart = 1,
+	results = [];
+
+    reduce(
+		arr,
+	    function(result, nextEl) {
+		  results.push(result);
+	    },valStart
+	);
+    eq(results[0],valStart);
+  },
+
+  'If startVal is provided, current element is initialized with array[0]: ': function() {
+
+    var
+	arr = [1,2,3],
+	valStart = 1,
+	currentElements = [];
+
+    reduce(
+		arr,
+	    function(result, currentEl) {
+		  currentElements.push(currentEl);
+	    },valStart
+	);
+    eq(currentElements[0],arr[0]);
+  },
+
+  'if startVal is NOT provided, result is initialized with array[0]: ': function() {
+
+    var
+	arr = [1,2,3],
+	results = [];
+
+    reduce(
+		arr,
+	    function(result) {
+		  results.push(result);
+	    }
+	);
+    eq(results[0],arr[0]);
+  },
+
+  'if startVal is NOT provided, current element is initialized with array[1]: ': function() {
+
+	var
+	arr = [1,2,3],
+	currentElements = [];
+
+    reduce(
+		arr,
+	    function(result, currentEl) {
+		  currentElements.push(currentEl);
+	    }
+	);
+    eq(currentElements[0],arr[1]);
+  },
+
+  'if the array (passed in) is empty and startVal is NOT provided >>> typeError: ': function() {
+
+	var
+	arr = [],
+	result =
+	reduce(
+		arr,
+	    function() {
+	    }
+	);
+    console.log(result instanceof TypeError);
+    eq(result instanceof TypeError, true);
+  },
+
+  'if the array is empty and startVal is provided >>> return startVal w/o running callback: ': function() {
+
+    var
+	arr = [],
+	testArr,
+	startVal = 5,
+	result =
+	reduce(
+		arr,
+	    function(result, currentValue, i, array) {
+			return testArr = [1,2,3];
+	    }, startVal
+	);
+    eq(result, 5);
+	eq(testArr === undefined, true);
+  },
+
+  'if the array has one element and startVal is Not provided >>> return array[0] w/o running callback: ': function() {
+
+    var
+	arr = [1],
+	testArr,
+	result =
+	reduce(
+		arr,
+	    function() {
+			return testArr = [1,2,3];
+	    }
+	);
+    eq(result, arr[0]);
+	eq(testArr === undefined, true);
+  },
+
+  'Reduce function should return a single value: ': function() {
+
+	var
+	arr = [1,2,3],
+    result =
+    reduce(
+		arr,
+	    function(result, nextEl) {
+		  return result + nextEl;
+	    }
+	);
+    eq(result,6);
+  },
+
+  'Reduce function should skip over any hole(s) in the array: ': function() {
+
+	var
+	arr = [,1,,2,3,,],
+	noHoleArr = [];
+
+    reduce(
+		arr,
+	    function(result, nextEl) {
+		  noHoleArr.push(nextEl);
+	    }
+	);
+    eq(noHoleArr[0],1);
+	eq(noHoleArr[1],2);
+	eq(noHoleArr[2],3);
+  },
+
+  'Reduce function pass the array to its callback function: ': function() {
+
+	var
+	arr = [1,2],
+	originalArr = [];
+
+    reduce(
+		arr,
+	    function(result, nextEl, i, array) {
+		  originalArr = array;
+	    }
+	);
+    eq(originalArr,arr);
+  }
+
+});
+
+
+</script>
