@@ -44,11 +44,11 @@ function reduce(array, callback, startVal) {
   // find the 1st element in the array that isn't empty
   firstEl = array[Object.keys(array)[0]];
 
-  if (array.length === 0 && startVal != undefined) {
+  if (numOfKeys === 0 && startVal != undefined) {
 	  return startVal;
   } else if (numOfKeys === 1 && startVal === undefined) {
 	  return firstEl;
-  } else if (array.length === 0 && startVal === undefined) {
+  } else if (numOfKeys === 0 && startVal === undefined) {
       throw new TypeError('Need at least (1) element in an array or a starting value to return');
   } else if (numOfKeys > 0 && startVal != undefined) {
       result = startVal;
@@ -137,10 +137,10 @@ tests({
     eq(currentElements[0],arr[0]);
   },
 
-  'if startVal is NOT provided, result is initialized with array[0]: ': function() {
+  'if startVal is NOT provided, result is initialized with the 1st element in the array that isn\'t empty: ': function() {
 
     var
-	arr = [1,2,3],
+	arr = [,1,2,3],
 	results = [];
 
     reduce(
@@ -149,13 +149,13 @@ tests({
 		  results.push(result);
 	    }
 	);
-    eq(results[0],arr[0]);
+    eq(results[0],arr[1]);
   },
 
   'if startVal is NOT provided, current element is initialized with array[1]: ': function() {
 
 	var
-	arr = [1,2,3],
+	arr = [,1,2,3],
 	currentElements = [];
 
     reduce(
