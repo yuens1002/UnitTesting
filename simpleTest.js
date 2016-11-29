@@ -37,6 +37,34 @@
  * -Joe Walnes
  * MIT License. See https://github.com/joewalnes/jstinytest/
  */
+
+/*
+
+TODOS
+
+make test results easier to read.
+
+DONE 1. make pass tests' text green
+DONE 2. make failed tests' red
+DONE 3. number of failed tests should match the number of errors in console
+DONE 4. hide error stack by default, expand when user clicks on the triangle UI element
+5. display a summary of test results on the browser
+
+*/
+
+var Helper = {
+	render: function(tests, failures) {
+        var totalTests = Object.keys(tests).length;
+		var passes = totalTests - failures;
+
+		var node = document.createElement('H1');
+		var text = document.createTextNode(totalTests + ' tests ran: ' + failures + ' failed, ' + passes + ' passed');
+		node.appendChild(text);
+		document.body.appendChild(node);
+	}
+}
+
+
 var TinyTest = {
 
     run: function(tests) {
@@ -45,16 +73,32 @@ var TinyTest = {
             var testAction = tests[testName];
             try {
                 testAction.apply(this);
-                console.log('Test:', testName, 'OK');
+                console.log('%c' + testName + ' PASSED', 'color: green');
             } catch (e) {
                 failures++;
-                console.error('Test:', testName, 'FAILED', e);
-                console.error(e.stack);
+                console.groupCollapsed('%c' + testName +  ' FAILED', 'color: red');
+				console.error(e.stack);
+				console.groupEnd();
             }
         }
         setTimeout(function() { // Give document a chance to complete
             if (window.document && document.body) {
                 document.body.style.backgroundColor = (failures == 0 ? '#99ff99' : '#ff9999');
+			/*
+			summary of stats
+			total # of tests ran
+			# of passed tests
+			# of failed tests
+
+			totalTests = failed + passed tests
+
+			*/
+
+			Helper.render(tests, failures);
+
+
+
+
             }
         }, 0);
     },
